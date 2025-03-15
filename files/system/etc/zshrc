@@ -20,7 +20,7 @@ export DIRENV_LOG_FORMAT=""
 source /usr/share/antidote/antidote.zsh
 
 if [ ! -f "$HOME/.zshrc" ]; then
-  cp /etc/zsh_plugins.txt "$HOME/.zsh_plugins.txt"
+  touch ~/.zshrc
 fi
 
 cp /etc/zsh_plugins.txt "$HOME/.zsh_plugins.txt"
