@@ -44,7 +44,12 @@ modules:
   - type: script
     scripts:
       - setup-antidote.sh
-      - setup-neovim.sh
+      - ensure-executables.sh
+
+  - type: systemd
+    user:
+      enabled:
+        - nvim-config-setup.service
 
   - type: default-flatpaks
     notify: true # Send notification after install/uninstall is finished (true/false)
@@ -52,6 +57,7 @@ modules:
       # If no repo information is specified, Flathub will be used by default
       install:
         - com.brave.Browser
+        - io.neovim.nvim
       remove:
         - org.gnome.eog
     user: {} # Also add Flathub user repo, but no user packages

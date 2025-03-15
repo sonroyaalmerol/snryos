@@ -1,0 +1,10 @@
+[Unit]
+Description=Setup Neovim Configuration
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/setup-nvim-config.sh
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
