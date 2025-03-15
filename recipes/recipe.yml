@@ -26,6 +26,7 @@ modules:
       - ghostty
       - starship
       - neovim
+      - brave-browser
     remove:
       - firefox
       - firefox-langpacks
@@ -56,9 +57,6 @@ modules:
   - type: default-flatpaks
     notify: true # Send notification after install/uninstall is finished (true/false)
     system:
-      # If no repo information is specified, Flathub will be used by default
-      install:
-        - com.brave.Browser
       remove:
         - org.gnome.eog
     user: {} # Also add Flathub user repo, but no user packages

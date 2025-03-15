@@ -184,14 +184,14 @@ symbol = " "
 style = "bold bg:foam fg:base"
 
 [nix_shell]
-format = "[](fg:foam)[$symbol$state(\($name\))]($style)[](fg:foam)"
+format = "[](fg:foam)[$symbol$state(\\($name\\))]($style)[](fg:foam)"
 impure_msg = "[ ](bold fg:#8A3324  bg:foam)"
 pure_msg = "[ ](bold fg:base bg:foam)"
 style = "bold bg:foam fg:base"
 symbol = ""
 
 [python]
-format = "[](fg:gold)[$symbol$pyenv_prefix($version )(\($virtualenv\))]($style)[](fg:gold)"
+format = "[](fg:gold)[$symbol$pyenv_prefix($version )(\\($virtualenv\\))]($style)[](fg:gold)"
 symbol = " "
 style = "bold bg:gold fg:base"
 
