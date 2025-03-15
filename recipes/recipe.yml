@@ -24,6 +24,7 @@ modules:
       - mako
       - zsh
       - ghostty
+      - starship
     remove:
       - firefox
       - firefox-langpacks
