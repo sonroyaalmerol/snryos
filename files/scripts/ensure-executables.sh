@@ -3,4 +3,4 @@
 set -oue pipefail
 
 chmod +x /usr/bin/setup-nvim-config.sh
-chmod +x /usr/share/scripts/screenshot.sh
+chmod +x /usr/share/hyprland/scripts/screenshot.sh
