@@ -19,7 +19,7 @@ modules:
 
   - type: rpm-ostree
     repos:
-      - https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/fedora-%OS_VERSION%/
+      - https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/fedora-%OS_VERSION%-x86_64/
     install:
       - ghostty
       - wlogout
