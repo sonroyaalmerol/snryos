@@ -29,10 +29,22 @@ modules:
       - firefox-langpacks
       - kitty
 
+  - type: fonts
+    fonts:
+      nerd-fonts:
+        - FiraCode
+        - CaskaydiaCove
+        - Iosevka
+        - NerdFontsSymbolsOnly
+
+  - type: brew
+    nofile-limits: true # increase nofile limits
+    brew-analytics: false # disable telemetry
+
   - type: script
     scripts:
-      - setup-fonts.sh
       - setup-antidote.sh
+      - setup-neovim.sh
 
   - type: default-flatpaks
     notify: true # Send notification after install/uninstall is finished (true/false)

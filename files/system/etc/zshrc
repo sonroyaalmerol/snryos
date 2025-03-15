@@ -17,5 +17,5 @@ bindkey '^ ' autosuggest-accept
 # Direnv log format
 export DIRENV_LOG_FORMAT=""
 
-source ${ZDOTDIR:-$HOME}/.antidote/antidote.zsh
-antidote load ${ZDOTDIR:-$HOME}/.zsh_plugins.txt
+source /usr/share/antidote/antidote.zsh
+antidote load /etc/zsh_plugins.txt
