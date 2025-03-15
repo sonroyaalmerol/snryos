@@ -17,16 +17,23 @@ modules:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
 
+  - type: script
+    scripts:
+      - secure-repo-files.sh
+
   - type: rpm-ostree
     install:
       - git
       - wlogout
       - mako
       - zsh
+      - zsh-autosuggestions
+      - zsh-syntax-highlighting
       - ghostty
       - starship
       - neovim
       - brave-browser
+      - setroubleshoot
     remove:
       - firefox
       - firefox-langpacks

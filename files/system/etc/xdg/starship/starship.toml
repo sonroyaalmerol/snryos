@@ -1,4 +1,5 @@
 palette = "rose_pine"
+add_newline = true
 
 [palettes.catppuccin_mocha]
 rosewater = "#f4dbd6"
@@ -288,8 +289,6 @@ format = "[](fg:foam)[ $time ]($style)"
 disabled = false
 time_format = "%R"
 style = "bold bg:foam fg:base"
-
-add_newline = true
 
 [character]
 format = "$symbol"
