@@ -20,27 +20,14 @@ modules:
   - type: rpm-ostree
     install:
       - git
-      - gtk4-devel
-      - zig
-      - libadwaita-devel
-      - blueprint-compiler
-
-  - type: script
-    scripts:
-      - build-ghostty.sh
-
-  - type: rpm-ostree
-    install:
       - wlogout
       - mako
       - zsh
+      - ghostty
     remove:
       - firefox
       - firefox-langpacks
       - kitty
-      - libadwaita-devel
-      - blueprint-compiler
-      - gtk4-devel
 
   - type: script
     scripts:
