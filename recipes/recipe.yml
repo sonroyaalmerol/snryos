@@ -18,18 +18,29 @@ modules:
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
 
   - type: rpm-ostree
-    repos:
-      - https://download.copr.fedorainfracloud.org/results/pgdev/ghostty/fedora-%OS_VERSION%-x86_64/
     install:
-      - ghostty
+      - git
+      - gtk4-devel
+      - zig
+      - libadwaita-devel
+      - blueprint-compiler
+
+  - type: script
+    scripts:
+      - build-ghostty.sh
+
+  - type: rpm-ostree
+    install:
       - wlogout
       - mako
       - zsh
-      - git
     remove:
       - firefox
       - firefox-langpacks
       - kitty
+      - libadwaita-devel
+      - blueprint-compiler
+      - gtk4-devel
 
   - type: script
     scripts:

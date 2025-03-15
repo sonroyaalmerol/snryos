@@ -1,0 +1,6 @@
+configuration {
+    font: "FiraCode Nerd Font Mono 11";
+    location: center;
+    terminal: ghostty;
+}
+@import "launcher.rasi"
