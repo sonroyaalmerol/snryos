@@ -1,2 +1,7 @@
 GTK_THEME=Adwaita:dark
 QT_STYLE_OVERRIDE=adwaita-dark
+EDITOR=nvim
+TERM=xterm-256color
+USE_EDITOR=$EDITOR
+VISUAL=$EDITOR
+BROWSER=brave

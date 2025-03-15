@@ -10,3 +10,5 @@ if [ ! -d "$CONFIG_DIR/.git" ]; then
 else
   echo "Configuration already exists. Skipping clone."
 fi
+
+alias nvim="flatpak run io.neovim.nvim"

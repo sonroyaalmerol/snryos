@@ -18,4 +18,11 @@ bindkey '^ ' autosuggest-accept
 export DIRENV_LOG_FORMAT=""
 
 source /usr/share/antidote/antidote.zsh
-antidote load /etc/zsh_plugins.txt
+
+if [ ! -f "$HOME/.zshrc" ]; then
+  cp /etc/zsh_plugins.txt "$HOME/.zsh_plugins.txt"
+fi
+
+cp /etc/zsh_plugins.txt "$HOME/.zsh_plugins.txt"
+
+antidote load $HOME/.zsh_plugins.txt
