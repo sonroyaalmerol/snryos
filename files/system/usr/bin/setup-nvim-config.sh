@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Ensure the Flatpak app's configuration directory exists
-CONFIG_DIR="$HOME/.var/app/io.neovim.nvim/config/nvim"
+CONFIG_DIR="$HOME/.config/nvim"
 mkdir -p "$CONFIG_DIR"
 
 # Clone the starter configuration
@@ -10,5 +10,3 @@ if [ ! -d "$CONFIG_DIR/.git" ]; then
 else
   echo "Configuration already exists. Skipping clone."
 fi
-
-alias nvim="flatpak run io.neovim.nvim"

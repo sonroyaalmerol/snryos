@@ -25,6 +25,7 @@ modules:
       - zsh
       - ghostty
       - starship
+      - neovim
     remove:
       - firefox
       - firefox-langpacks
@@ -58,7 +59,6 @@ modules:
       # If no repo information is specified, Flathub will be used by default
       install:
         - com.brave.Browser
-        - io.neovim.nvim
       remove:
         - org.gnome.eog
     user: {} # Also add Flathub user repo, but no user packages

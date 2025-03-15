@@ -27,4 +27,5 @@ cp /etc/zsh_plugins.txt "$HOME/.zsh_plugins.txt"
 
 antidote load $HOME/.zsh_plugins.txt
 
+export STARSHIP_CONFIG=/etc/xdg/starship/starship.toml
 eval "$(starship init zsh)"
