@@ -33,7 +33,7 @@ modules:
     fonts:
       nerd-fonts:
         - FiraCode
-        - CaskaydiaCove
+        - CascadiaCode
         - Iosevka
         - NerdFontsSymbolsOnly
 
