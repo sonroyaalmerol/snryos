@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Ensure the Flatpak app's configuration directory exists
+# Neovim
 CONFIG_DIR="$HOME/.config/nvim"
 mkdir -p "$CONFIG_DIR"
 
@@ -8,5 +8,5 @@ mkdir -p "$CONFIG_DIR"
 if [ ! -d "$CONFIG_DIR/.git" ]; then
   git clone https://github.com/sonroyaalmerol/nvchad-personal-config "$CONFIG_DIR"
 else
-  echo "Configuration already exists. Skipping clone."
+  git -C "$CONFIG_DIR" pull
 fi
