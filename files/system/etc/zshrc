@@ -2,6 +2,8 @@
 autoload -Uz compinit
 compinit
 
+source /etc/environment
+
 # Enable autosuggestions
 if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
   source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -51,7 +53,6 @@ else
 fi
 
 # Set terminal color support
-export TERM=xterm-256color
 export STARSHIP_CONFIG="$HOME/.config/starship.toml"
 
 # Configure Starship prompt

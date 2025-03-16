@@ -47,6 +47,8 @@ modules:
       - kolourpaint
       - haruna
       - gwenview
+      - steam
+      - xdg-desktop-portal-gtk
     remove:
       - firefox
       - firefox-langpacks
