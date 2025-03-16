@@ -127,10 +127,6 @@ modules:
         - Iosevka
         - NerdFontsSymbolsOnly
 
-  - type: brew
-    nofile-limits: true # increase nofile limits
-    brew-analytics: false # disable telemetry
-
   - type: script
     scripts:
       - setup-antidote.sh
