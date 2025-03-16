@@ -17,7 +17,7 @@ modules:
     files:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
-        
+
   - type: rpm-ostree
     repos:
       - https://copr.fedorainfracloud.org/coprs/agriffis/neovim-nightly/repo/fedora-%OS_VERSION%/agriffis-neovim-nightly-fedora-%OS_VERSION%.repo
@@ -52,17 +52,6 @@ modules:
           - mrvlprestera-firmware
           - brcmfmac-firmware
           - dvb-firmware
-      - from-repo: https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite-multilib/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-multilib-fedora-%OS_VERSION%.repo?arch=x86_64
-        packages:
-          - pipewire
-          - pipewire-libs
-          - pipewire-jack-audio-connection-kit
-          - pipewire-jack-audio-connection-kit-libs
-          - pipewire-plugin-libcamera
-          - pipewire-gstreamer
-          - pipewire-utils
-          - pipewire-alsa
-          - pipewire-pulseaudio
       - from-repo: https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite-multilib/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-multilib-fedora-%OS_VERSION%.repo?arch=x86_64
         packages:
           - pipewire
