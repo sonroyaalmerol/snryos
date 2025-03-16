@@ -75,6 +75,8 @@ modules:
       - brave.com
       - zen
     install:
+      - qt5ct
+      - qt6ct
       - git
       - wlogout
       - mako
