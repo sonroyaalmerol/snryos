@@ -9,20 +9,18 @@ description: This is my personal OS image.
 base-image: ghcr.io/wayblueorg/hyprland
 image-version: latest
 
-# FROM ghcr.io/ublue-os/akmods:${KERNEL_FLAVOR}-${FEDORA_MAJOR_VERSION}-${KERNEL_VERSION} AS akmods
-# FROM ghcr.io/ublue-os/akmods-extra:${KERNEL_FLAVOR}-${FEDORA_MAJOR_VERSION}-${KERNEL_VERSION} AS akmods-extra
-
 modules:
   - type: files
     files:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
-
+  
   - type: rpm-ostree
     repos:
       - https://copr.fedorainfracloud.org/coprs/agriffis/neovim-nightly/repo/fedora-%OS_VERSION%/agriffis-neovim-nightly-fedora-%OS_VERSION%.repo
       - https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-fedora-%OS_VERSION%.repo
       - https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite-multilib/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-multilib-fedora-%OS_VERSION%.repo?arch=x86_64
+      - https://github.com/terrapkg/subatomic-repos/raw/main/terra.repo
     replace:
       - from-repo: https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-fedora-%OS_VERSION%.repo
         packages:
@@ -63,27 +61,26 @@ modules:
           - pipewire-utils
           - pipewire-alsa
           - pipewire-pulseaudio
-      - from-repo: https://raw.githubusercontent.com/terrapkg/packages/refs/heads/frawhide/anda/terra/release/terra-mesa.repo
-        packages:
-          - mesa-dri-drivers
-          - mesa-filesystem
-          - mesa-libEGL
-          - mesa-libGL
-          - mesa-libgbm
-          - mesa-va-drivers
-          - mesa-vulkan-drivers
+    install:
+      - terra-release
+      - terra-release-extras
 
   - type: rpm-ostree
     repos:
       - https://copr.fedorainfracloud.org/coprs/sneexy/zen-browser/repo/fedora-%OS_VERSION%/sneexy-zen-browser-fedora-%OS_VERSION%.repo
       - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
-      - https://raw.githubusercontent.com/terrapkg/packages/refs/heads/frawhide/anda/terra/release/terra.repo
-      - https://raw.githubusercontent.com/terrapkg/packages/refs/heads/frawhide/anda/terra/release/terra-extras.repo
     keys:
       - https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
     optfix:
       - brave.com
     install:
+      - mesa-dri-drivers
+      - mesa-filesystem
+      - mesa-libEGL
+      - mesa-libGL
+      - mesa-libgbm
+      - mesa-va-drivers
+      - mesa-vulkan-drivers
       - git
       - wlogout
       - mako
