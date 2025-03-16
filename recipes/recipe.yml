@@ -45,6 +45,8 @@ modules:
       - system-config-printer
       - libreoffice
       - kolourpaint
+      - haruna
+      - gwenview
     remove:
       - firefox
       - firefox-langpacks
