@@ -112,7 +112,6 @@ modules:
     scripts:
       - setup-antidote.sh
       - ensure-executables.sh
-      - install-zen.sh
 
   - type: systemd
     user:
