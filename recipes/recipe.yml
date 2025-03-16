@@ -64,6 +64,14 @@ modules:
     install:
       - terra-release
       - terra-release-extras
+    remove:
+      - mesa-dri-drivers
+      - mesa-filesystem
+      - mesa-libEGL
+      - mesa-libGL
+      - mesa-libgbm
+      - mesa-va-drivers
+      - mesa-vulkan-drivers
 
   - type: rpm-ostree
     repos:
