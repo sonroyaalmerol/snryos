@@ -75,12 +75,9 @@ modules:
       - terra-release
       - terra-release-extras
 
-  - type: script
-    scripts:
-      - repo-exclusions.sh
-
   - type: rpm-ostree
     repos:
+      - https://copr.fedorainfracloud.org/coprs/sneexy/zen-browser/repo/fedora-%OS_VERSION%/sneexy-zen-browser-fedora-%OS_VERSION%.repo
       - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
     keys:
       - https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
@@ -104,6 +101,7 @@ modules:
       - starship
       - neovim
       - brave-browser
+      - zen-browser
       - setroubleshoot
       - kate
       - kcalc
