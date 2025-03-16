@@ -43,11 +43,12 @@ modules:
       - kcalc
       - korganizer
       - system-config-printer
+      - simple-scan
+      - sane-airscan
       - libreoffice
       - kolourpaint
       - haruna
       - gwenview
-      - steam
       - xdg-desktop-portal-gtk
     remove:
       - firefox
