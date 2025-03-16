@@ -16,17 +16,20 @@ modules:
     files:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
+  
+  - type: script
+    scripts:
+      - repo-exclusions.sh
 
   - type: rpm-ostree
     repos:
       - https://github.com/terrapkg/subatomic-repos/raw/main/terra.repo
     install:
       - terra-release
+      - terra-release-extras
 
   - type: rpm-ostree
     repos:
-      - https://copr.fedorainfracloud.org/coprs/atim/starship/repo/fedora-%OS_VERSION%/atim-starship-fedora-%OS_VERSION%.repo
-      - https://copr.fedorainfracloud.org/coprs/pgdev/ghostty/repo/fedora-%OS_VERSION%/pgdev-ghostty-fedora-%OS_VERSION%.repo
       - https://copr.fedorainfracloud.org/coprs/agriffis/neovim-nightly/repo/fedora-%OS_VERSION%/agriffis-neovim-nightly-fedora-%OS_VERSION%.repo
       - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
     keys:
@@ -44,9 +47,42 @@ modules:
       - from-repo: https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-fedora-%OS_VERSION%.repo
         packages:
           - linux-firmware
+          - netronome-firmware
+          - libertas-firmware
+          - atheros-firmware
+          - realtek-firmware
+          - tiwilink-firmware
+          - cirrus-audio-firmware
+          - linux-firmware-whence
+          - iwlwifi-dvm-firmware
+          - iwlwifi-mvm-firmware
+          - amd-ucode-firmware
+          - qcom-firmware
+          - mt7xxx-firmware
+          - liquidio-firmware
+          - nxpwireless-firmware
+          - intel-vsc-firmware
+          - nvidia-gpu-firmware
+          - intel-audio-firmware
+          - amd-gpu-firmware
+          - iwlegacy-firmware
+          - intel-gpu-firmware
+          - mlxsw_spectrum-firmware
+          - qed-firmware
+          - mrvlprestera-firmware
+          - brcmfmac-firmware
+          - dvb-firmware
       - from-repo: https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite-multilib/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-multilib-fedora-%OS_VERSION%.repo?arch=x86_64
         packages:
           - pipewire
+          - pipewire-libs
+          - pipewire-jack-audio-connection-kit
+          - pipewire-jack-audio-connection-kit-libs
+          - pipewire-plugin-libcamera
+          - pipewire-gstreamer
+          - pipewire-utils
+          - pipewire-alsa
+          - pipewire-pulseaudio
     install:
       - mesa-dri-drivers
       - mesa-filesystem
