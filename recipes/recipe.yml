@@ -134,7 +134,6 @@ modules:
     scripts:
       - setup-antidote.sh
       - ensure-executables.sh
-      - disable-fedora-kernel.sh
 
   - type: systemd
     user:
