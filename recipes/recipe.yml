@@ -17,28 +17,13 @@ modules:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
   
-  - type: script
-    scripts:
-      - repo-exclusions.sh
-
-  - type: rpm-ostree
-    repos:
-      - https://github.com/terrapkg/subatomic-repos/raw/main/terra.repo
-    install:
-      - terra-release
-      - terra-release-extras
-
   - type: rpm-ostree
     repos:
       - https://copr.fedorainfracloud.org/coprs/sentry/kernel-blu/repo/fedora-%OS_VERSION%/sentry-kernel-blu-fedora-%OS_VERSION%.repo
       - https://copr.fedorainfracloud.org/coprs/agriffis/neovim-nightly/repo/fedora-%OS_VERSION%/agriffis-neovim-nightly-fedora-%OS_VERSION%.repo
-      - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
       - https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-fedora-%OS_VERSION%.repo
       - https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite-multilib/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-multilib-fedora-%OS_VERSION%.repo?arch=x86_64
-    keys:
-      - https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
-    optfix:
-      - brave.com
+      - https://github.com/terrapkg/subatomic-repos/raw/main/terra.repo
     replace:
       - from-repo: https://copr.fedorainfracloud.org/coprs/sentry/kernel-blu/repo/fedora-%OS_VERSION%/sentry-kernel-blu-fedora-%OS_VERSION%.repo
         packages:
@@ -86,6 +71,21 @@ modules:
           - pipewire-utils
           - pipewire-alsa
           - pipewire-pulseaudio
+    install:
+      - terra-release
+      - terra-release-extras
+
+  - type: script
+    scripts:
+      - repo-exclusions.sh
+
+  - type: rpm-ostree
+    repos:
+      - https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+    keys:
+      - https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+    optfix:
+      - brave.com
     install:
       - mesa-dri-drivers
       - mesa-filesystem
