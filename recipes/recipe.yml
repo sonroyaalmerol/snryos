@@ -15,10 +15,39 @@ modules:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
   
+  - type: rpm-ostree
+    replace:
+      - from-repo: https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-fedora-%OS_VERSION%.repo
+        packages:
+          - linux-firmware
+          - netronome-firmware
+          - libertas-firmware
+          - atheros-firmware
+          - realtek-firmware
+          - tiwilink-firmware
+          - cirrus-audio-firmware
+          - linux-firmware-whence
+          - iwlwifi-dvm-firmware
+          - iwlwifi-mvm-firmware
+          - amd-ucode-firmware
+          - qcom-firmware
+          - mt7xxx-firmware
+          - liquidio-firmware
+          - nxpwireless-firmware
+          - intel-vsc-firmware
+          - nvidia-gpu-firmware
+          - intel-audio-firmware
+          - amd-gpu-firmware
+          - iwlegacy-firmware
+          - intel-gpu-firmware
+          - mlxsw_spectrum-firmware
+          - qed-firmware
+          - mrvlprestera-firmware
+          - brcmfmac-firmware
+          - dvb-firmware
+
   - type: containerfile
     snippets:
-      - FROM ghcr.io/ublue-os/akmods:bazzite-41 AS akmods
-      - FROM ghcr.io/ublue-os/akmods-extra:bazzite-41 AS akmods-extra
       - |
         RUN --mount=type=cache,dst=/var/cache \
           --mount=type=cache,dst=/var/log \
@@ -67,54 +96,6 @@ modules:
           dnf5 -y config-manager setopt "*rpmfusion*".priority=5 "*rpmfusion*".exclude="mesa-*" && \
           dnf5 -y config-manager setopt "*fedora*".exclude="mesa-* kernel-core-* kernel-modules-* kernel-uki-virt-*" && \
           dnf5 -y config-manager setopt "*staging*".exclude="scx-scheds kf6-* mesa* mutter* rpm-ostree* systemd* gnome-shell gnome-settings-daemon gnome-control-center gnome-software libadwaita tuned*" && \
-          /usr/bin/osinstall-cleanup
-      - |
-        RUN --mount=type=cache,dst=/var/cache \
-          --mount=type=cache,dst=/var/log \
-          --mount=type=bind,from=akmods,src=/kernel-rpms,dst=/tmp/kernel-rpms \
-          --mount=type=bind,from=akmods,src=/rpms,dst=/tmp/akmods-rpms \
-          --mount=type=bind,from=akmods-extra,src=/rpms,dst=/tmp/akmods-extra-rpms \
-          --mount=type=tmpfs,dst=/tmp \
-          /usr/bin/osinstall-kernel-akmods && \
-          for toswap in linux-firmware netronome-firmware libertas-firmware atheros-firmware realtek-firmware tiwilink-firmware cirrus-audio-firmware linux-firmware-whence iwlwifi-dvm-firmware iwlwifi-mvm-firmware amd-ucode-firmware qcom-firmware mt7xxx-firmware liquidio-firmware nxpwireless-firmware intel-vsc-firmware nvidia-gpu-firmware intel-audio-firmware amd-gpu-firmware iwlegacy-firmware intel-gpu-firmware mlxsw_spectrum-firmware qed-firmware mrvlprestera-firmware brcmfmac-firmware dvb-firmware; do \
-              dnf5 -y swap --repo copr:copr.fedorainfracloud.org:bazzite-org:bazzite $toswap $toswap; \
-          done && unset -v toswap && \
-          dnf5 -y config-manager setopt "*rpmfusion*".enabled=0 && \
-          dnf5 -y copr enable bieszczaders/kernel-cachyos-addons && \
-          dnf5 -y install \
-              scx-scheds && \
-          dnf5 -y copr disable bieszczaders/kernel-cachyos-addons && \
-          for toswap in rpm-ostree bootc; do \
-              dnf5 -y swap --repo copr:copr.fedorainfracloud.org:bazzite-org:bazzite $toswap $toswap; \
-          done && unset -v toswap && \
-          /usr/bin/osinstall-cleanup
-      - |
-        RUN --mount=type=cache,dst=/var/cache \
-          --mount=type=cache,dst=/var/log \
-          --mount=type=tmpfs,dst=/tmp \
-          if [[ "${IMAGE_FLAVOR}" =~ "asus" ]]; then \
-              dnf5 -y copr enable lukenukem/asus-linux && \
-              dnf5 -y install \
-                  asusctl \
-                  asusctl-rog-gui && \
-              dnf5 copr disable -y lukenukem/asus-linux \
-          ; elif [[ "${IMAGE_FLAVOR}" == "surface" ]]; then \
-              dnf5 -y config-manager addrepo --from-repofile=https://pkg.surfacelinux.com/fedora/linux-surface.repo && \
-              dnf5 -y swap \
-                  --allowerasing \
-                  libwacom-data libwacom-surface-data && \
-              dnf5 versionlock add \
-                  libwacom-surface-data && \
-              dnf5 -y install \
-                  iptsd \
-                  libcamera \
-                  libcamera-tools \
-                  libcamera-gstreamer \
-                  libcamera-ipa \
-                  pipewire-plugin-libcamera && \
-              dnf5 -y config-manager setopt "linux-surface".enabled=0 \
-          ; fi && \
-          /usr/bin/osinstall-firmware && \
           /usr/bin/osinstall-cleanup
       - |
         RUN --mount=type=cache,dst=/var/cache \
