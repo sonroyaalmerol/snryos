@@ -19,7 +19,6 @@ modules:
     repos:
       - https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-fedora-%OS_VERSION%.repo
       - https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite-multilib/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-multilib-fedora-%OS_VERSION%.repo?arch=x86_64
-      - https://github.com/terrapkg/subatomic-repos/raw/main/terra.repo
     replace:
       - from-repo: https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-fedora-%OS_VERSION%.repo
         packages:
@@ -61,8 +60,8 @@ modules:
           - pipewire-alsa
           - pipewire-pulseaudio
     install:
-      - terra-release
-      - terra-release-extras
+      - https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-41.noarch.rpm
+      - https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-41.noarch.rpm
 
   - type: rpm-ostree
     repos:
@@ -100,6 +99,8 @@ modules:
       - haruna
       - gwenview
       - xdg-desktop-portal-gtk
+      - steam
+      - steam-devices
     remove:
       - firefox
       - firefox-langpacks
