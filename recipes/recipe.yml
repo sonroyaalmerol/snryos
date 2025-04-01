@@ -67,7 +67,6 @@ modules:
       - https://copr.fedorainfracloud.org/coprs/sneexy/zen-browser/repo/fedora-%OS_VERSION%/sneexy-zen-browser-fedora-%OS_VERSION%.repo
       - https://copr.fedorainfracloud.org/coprs/pgdev/ghostty/repo/fedora-%OS_VERSION%/pgdev-ghostty-fedora-%OS_VERSION%.repo
       - https://copr.fedorainfracloud.org/coprs/atim/starship/repo/fedora-%OS_VERSION%/atim-starship-fedora-%OS_VERSION%.repo
-      - https://negativo17.org/repos/fedora-steam.repo
       - https://negativo17.org/repos/fedora-rar.repo
     keys:
       - https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
@@ -101,13 +100,60 @@ modules:
       - haruna
       - gwenview
       - xdg-desktop-portal-gtk
-      - steam
-      - steam-devices
-      - gamescope
     remove:
       - firefox
       - firefox-langpacks
       - kitty
+
+  - type: containerfile
+    snippets:
+      - |
+        RUN --mount=type=cache,dst=/var/cache \
+          --mount=type=cache,dst=/var/log \
+          --mount=type=tmpfs,dst=/tmp \
+          dnf5 -y swap \
+          --repo copr:copr.fedorainfracloud.org:bazzite-org:bazzite \
+              ibus ibus && \
+          dnf5 versionlock add \
+              ibus && \
+          dnf5 -y install \
+              gamescope.x86_64 \
+              gamescope-libs.x86_64 \
+              gamescope-libs.i686 \
+              gamescope-shaders \
+              jupiter-sd-mounting-btrfs \
+              umu-launcher \
+              dbus-x11 \
+              xdg-user-dirs \
+              gobject-introspection \
+              libFAudio.x86_64 \
+              libFAudio.i686 \
+              latencyflex-vulkan-layer \
+              vkBasalt.x86_64 \
+              vkBasalt.i686 \
+              mangohud.x86_64 \
+              mangohud.i686 \
+              libobs_vkcapture.x86_64 \
+              libobs_glcapture.x86_64 \
+              libobs_vkcapture.i686 \
+              libobs_glcapture.i686 \
+              vk_hdr_layer.x86_64 \
+              vk_hdr_layer.i686 && \
+          dnf5 -y --setopt=install_weak_deps=False install \
+              steam \
+              lutris && \
+          dnf5 -y remove \
+              gamemode && \
+          curl -Lo /tmp/latencyflex.tar.xz $(curl https://api.github.com/repos/ishitatsuyuki/LatencyFleX/releases/latest | jq -r '.assets[] | select(.name| test(".*.tar.xz$")).browser_download_url') && \
+          mkdir -p /tmp/latencyflex && \
+          tar --no-same-owner --no-same-permissions --no-overwrite-dir --strip-components 1 -xvf /tmp/latencyflex.tar.xz -C /tmp/latencyflex && \
+          rm -f /tmp/latencyflex.tar.xz && \
+          mkdir -p /usr/lib64/latencyflex && \
+          cp -r /tmp/latencyflex/wine/usr/lib/wine/* /usr/lib64/latencyflex/ && \
+          curl -Lo /usr/bin/latencyflex https://raw.githubusercontent.com/bazzite-org/LatencyFleX-Installer/main/install.sh && \
+          chmod +x /usr/bin/latencyflex && \
+          curl -Lo /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks && \
+          chmod +x /usr/bin/winetricks
 
   - type: fonts
     fonts:
