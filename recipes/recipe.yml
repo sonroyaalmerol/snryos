@@ -245,8 +245,10 @@ modules:
 
   - type: script
     scripts:
+      - cleanup-os-install-scripts.sh
       - setup-antidote.sh
       - ensure-executables.sh
+      - use-steamos3.sh
 
   - type: systemd
     user:
