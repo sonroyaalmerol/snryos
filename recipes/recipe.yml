@@ -230,6 +230,9 @@ modules:
       - haruna
       - gwenview
       - xdg-desktop-portal-gtk
+      - xdotool
+      - xwininfo
+      - yad
     remove:
       - firefox
       - firefox-langpacks
