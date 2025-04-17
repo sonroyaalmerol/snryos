@@ -217,6 +217,9 @@ modules:
               system-config-printer \
               simple-scan \
               xdg-desktop-portal-gtk \
+              hypridle \
+              hyprlock \
+              hyprpaper \
               wlr-randr && \
           dnf5 -y --setopt=install_weak_deps=False install \
               rocm-hip \
