@@ -44,7 +44,8 @@ modules:
               rodoma92/kde-cdemu-manager \
               rodoma92/rmlint \
               ilyaz/LACT \
-              tulilirockz/fw-fanctrl; \
+              tulilirockz/fw-fanctrl \
+              solopasha/hyprland; \
           do \
               dnf5 -y copr enable $copr; \
               dnf5 -y config-manager setopt copr:copr.fedorainfracloud.org:${copr////:}.priority=98 ;\
