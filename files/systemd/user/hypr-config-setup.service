@@ -1,0 +1,10 @@
+[Unit]
+Description=Setup Hyprland Configuration
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/setup-hyprland-config.sh
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
