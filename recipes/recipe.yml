@@ -210,7 +210,7 @@ modules:
       - sane-airscan
       - libreoffice
       - kolourpaint
-      - haruna
+      - mpv
       - gwenview
       - xdg-desktop-portal-gtk
       - xdotool
