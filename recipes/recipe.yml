@@ -210,8 +210,8 @@ modules:
       - sane-airscan
       - libreoffice
       - kolourpaint
-      - mpv
-      - gwenview
+      - haruna
+      - nomacs
       - xdg-desktop-portal-gtk
       - xdotool
       - xwininfo
