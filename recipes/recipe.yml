@@ -15,37 +15,6 @@ modules:
       - source: system
         destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
   
-  - type: rpm-ostree
-    replace:
-      - from-repo: https://copr.fedorainfracloud.org/coprs/bazzite-org/bazzite/repo/fedora-%OS_VERSION%/bazzite-org-bazzite-fedora-%OS_VERSION%.repo
-        packages:
-          - linux-firmware
-          - netronome-firmware
-          - libertas-firmware
-          - atheros-firmware
-          - realtek-firmware
-          - tiwilink-firmware
-          - cirrus-audio-firmware
-          - linux-firmware-whence
-          - iwlwifi-dvm-firmware
-          - iwlwifi-mvm-firmware
-          - amd-ucode-firmware
-          - qcom-firmware
-          - mt7xxx-firmware
-          - liquidio-firmware
-          - nxpwireless-firmware
-          - intel-vsc-firmware
-          - nvidia-gpu-firmware
-          - intel-audio-firmware
-          - amd-gpu-firmware
-          - iwlegacy-firmware
-          - intel-gpu-firmware
-          - mlxsw_spectrum-firmware
-          - qed-firmware
-          - mrvlprestera-firmware
-          - brcmfmac-firmware
-          - dvb-firmware
-
   - type: containerfile
     snippets:
       - |
@@ -101,7 +70,19 @@ modules:
         RUN --mount=type=cache,dst=/var/cache \
           --mount=type=cache,dst=/var/log \
           --mount=type=tmpfs,dst=/tmp \
+          dnf5 -y config-manager setopt "*rpmfusion*".enabled=0 && \
+          dnf5 -y copr enable bieszczaders/kernel-cachyos-addons && \
+          dnf5 -y install \
+              scx-scheds && \
+          dnf5 -y copr disable bieszczaders/kernel-cachyos-addons && \
+          dnf5 -y swap --repo copr:copr.fedorainfracloud.org:bazzite-org:bazzite bootc bootc && \
+          /usr/bin/osinstall-cleanup
+      - |
+        RUN --mount=type=cache,dst=/var/cache \
+          --mount=type=cache,dst=/var/log \
+          --mount=type=tmpfs,dst=/tmp \
           declare -A toswap=( \
+              ["copr:copr.fedorainfracloud.org:bazzite-org:bazzite"]="wireplumber" \
               ["copr:copr.fedorainfracloud.org:bazzite-org:bazzite-multilib"]="pipewire bluez xorg-x11-server-Xwayland" \
               ["terra-extras"]="switcheroo-control" \
               ["terra-mesa"]="mesa-filesystem" \
@@ -120,6 +101,8 @@ modules:
               pipewire-plugin-libcamera \
               pipewire-pulseaudio \
               pipewire-utils \
+              wireplumber \
+              wireplumber-libs \
               bluez \
               bluez-cups \
               bluez-libs \
