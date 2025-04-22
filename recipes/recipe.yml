@@ -228,6 +228,11 @@ modules:
               hyprpolkitagent \
               cliphist \
               xdg-desktop-portal-hyprland \
+              arm-none-eabi-gcc-cs \
+              avr-gcc \
+              avrdude \
+              dfu-programmer \
+              dfu-util \
               wlr-randr && \
           dnf5 -y --setopt=install_weak_deps=False install \
               rocm-hip \
