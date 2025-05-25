@@ -258,6 +258,9 @@ modules:
           tar --no-same-owner --no-same-permissions --no-overwrite-dir -xvzf /tmp/scopebuddy.tar.gz -C /tmp/scopebuddy && \
           rm -f /tmp/scopebuddy.tar.gz && \
           cp -r /tmp/scopebuddy/ScopeBuddy-*/bin/* /usr/bin/ && \
+          curl -Lo /tmp/protonhax https://raw.githubusercontent.com/jcnils/protonhax/refs/heads/main/protonhax && \
+          cp -r /tmp/protonhax /usr/bin/protonhax && \
+          chmod +x /usr/bin/protonhax && \
           /usr/bin/osinstall-cleanup
       - |
         RUN --mount=type=cache,dst=/var/cache \
