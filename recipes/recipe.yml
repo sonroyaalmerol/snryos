@@ -242,7 +242,7 @@ modules:
               samba-common-tools \
               krb5-workstation \
               openldap-clients \
-              policycoreutils-python \
+              policycoreutils-python-utils \
               arm-none-eabi-gcc-cs \
               avr-gcc \
               avrdude \
