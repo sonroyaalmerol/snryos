@@ -262,6 +262,12 @@ modules:
               samba-common-tools \
               gvfs \
               gvfs-smb \
+              gvfs-client \
+              gvfs-archive \
+              gvfs-fuse \
+              gvfs-nfs \
+              gvfs-mtp \
+              dislocker \
               cifs-utils \
               ffmpeg \
               wsdd \
@@ -301,6 +307,8 @@ modules:
                 ibus ibus && \
             dnf5 versionlock add \
                 ibus && \
+            dnf5 -y install \
+                https://launchpad.net/veracrypt/trunk/1.25.9/+download/veracrypt-1.25.9-CentOS-8-x86_64.rpm && \
             dnf5 -y install \
                 dbus-x11 \
                 xdg-user-dirs \
