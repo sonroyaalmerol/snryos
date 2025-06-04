@@ -250,6 +250,10 @@ modules:
               adcli \
               samba-common \
               samba-common-tools \
+              gvfs \
+              gvfs-smb \
+              cifs-utils \
+              thunar-volman \
               krb5-workstation \
               openldap-clients \
               policycoreutils-python-utils \
