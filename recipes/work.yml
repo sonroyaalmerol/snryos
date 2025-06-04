@@ -184,6 +184,7 @@ modules:
               pulseaudio-utils \
               lzip \
               p7zip \
+              zip \
               rar \
               libxcrypt-compat \
               vulkan-tools \
@@ -253,7 +254,12 @@ modules:
               gvfs \
               gvfs-smb \
               cifs-utils \
-              thunar-volman \
+              dolphin \
+              ffmpeg \
+              ffmpegthumbs \
+              kdegraphics-thumbnailers \
+              libappimage \
+              meld \
               krb5-workstation \
               openldap-clients \
               policycoreutils-python-utils \
