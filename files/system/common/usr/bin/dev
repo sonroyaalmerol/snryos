@@ -5,7 +5,7 @@ IFS=$'\n\t'        # Set a safe internal field separator
 
 # Define variables
 DEV_INSTALL_SCRIPT="$HOME/.dev-install.sh"
-TOOLBOX_NAME="fedora"
+TOOLBOX_NAME="dev-snry"
 INIT_MARKER="$HOME/.toolbox_initialized"  # Marker file to signify initialization
 
 # Function to log messages
@@ -69,4 +69,4 @@ EOT
     log "Toolbox '$TOOLBOX_NAME' has been initialized."
 fi
 
-toolbox enter
+toolbox enter "$TOOLBOX_NAME"
