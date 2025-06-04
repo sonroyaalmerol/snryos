@@ -238,6 +238,11 @@ modules:
               hyprpolkitagent \
               cliphist \
               xdg-desktop-portal-hyprland \
+              NetworkManager-tui \
+              samba \
+              samba-client \
+              samba-winbind \
+              samba-winbind-clients \
               sssd \
               realmd \
               oddjob \
