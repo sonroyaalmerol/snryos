@@ -244,11 +244,14 @@ modules:
               samba-client \
               samba-winbind \
               samba-winbind-clients \
+              samba-winexe \
               sssd \
               realmd \
               oddjob \
               oddjob-mkhomedir \
               wsdd \
+              gnome-keyring \
+              seahorse \
               thunar \
               thunar-archive-plugin \
               ffmpegthumbnailer \
