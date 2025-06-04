@@ -349,6 +349,9 @@ modules:
       enabled:
         - nvim-config-setup.service
         - hypr-config-setup.service
+        - waybar.service
+        - hypridle.service
+        - hyprpaper.service
 
   - type: default-flatpaks
     notify: true # Send notification after install/uninstall is finished (true/false)
