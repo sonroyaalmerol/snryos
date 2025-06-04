@@ -1,0 +1,72 @@
+#!/bin/bash
+
+set -euo pipefail  # Enable strict error handling
+IFS=$'\n\t'        # Set a safe internal field separator
+
+# Define variables
+DEV_INSTALL_SCRIPT="$HOME/.dev-install.sh"
+TOOLBOX_NAME="fedora"
+INIT_MARKER="$HOME/.toolbox_initialized"  # Marker file to signify initialization
+
+# Function to log messages
+log() {
+    echo "[INFO] $1"
+}
+
+# Check if the toolbox has been initialized
+if [[ ! -f "$INIT_MARKER" ]]; then
+    log "Toolbox '$TOOLBOX_NAME' has not been initialized. Initializing it now."
+
+    # Create the development installation script
+    log "Creating the development installation script at $DEV_INSTALL_SCRIPT"
+    cat <<'EOT' > "$DEV_INSTALL_SCRIPT"
+#!/bin/bash
+set -euo pipefail
+
+# Enable COPR repositories
+sudo dnf copr enable -y atim/starship || echo "COPR atim/starship already enabled"
+sudo dnf copr enable -y agriffis/neovim-nightly || echo "COPR agriffis/neovim-nightly already enabled"
+sudo dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo || echo "gh-cli already enabled"
+
+# Install packages
+sudo dnf install -y \
+    gh \
+    git \
+    zsh \
+    zsh-autosuggestions \
+    zsh-syntax-highlighting \
+    starship \
+    neovim \
+    golang
+
+# Gopls
+go install golang.org/x/tools/gopls@latest
+EOT
+
+    # Make the script executable
+    chmod +x "$DEV_INSTALL_SCRIPT"
+
+    # Create a toolbox if it doesn't already exist
+    if ! toolbox list | grep -q "$TOOLBOX_NAME"; then
+        log "Creating a new toolbox named '$TOOLBOX_NAME'"
+        toolbox create --distro=fedora
+    else
+        log "Toolbox '$TOOLBOX_NAME' already exists"
+    fi
+
+    # Run the development installation script inside the toolbox
+    log "Running the development installation script inside the toolbox"
+    toolbox run --distro=fedora "$DEV_INSTALL_SCRIPT"
+
+    # Clean up the temporary script
+    log "Cleaning up the temporary script"
+    rm -f "$DEV_INSTALL_SCRIPT"
+
+    # Create the marker file to signify initialization
+    log "Creating the initialization marker file at $INIT_MARKER"
+    touch "$INIT_MARKER"
+
+    log "Toolbox '$TOOLBOX_NAME' has been initialized."
+fi
+
+toolbox enter

@@ -1,0 +1,64 @@
+# Enable Zsh completion
+autoload -Uz compinit
+compinit
+
+source /etc/environment
+
+# Enable autosuggestions
+if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+else
+  echo "[WARN] zsh-autosuggestions not found. Please install it."
+fi
+
+# Enable syntax highlighting
+if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+  source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+else
+  echo "[WARN] zsh-syntax-highlighting not found. Please install it."
+fi
+
+# Enable autocd (change directories without typing `cd`)
+setopt autocd
+
+# Custom key bindings for autosuggestions
+bindkey '^ ' autosuggest-accept
+
+# Direnv log format (disable logging)
+export DIRENV_LOG_FORMAT=""
+
+# Ensure user-specific configuration files exist
+if [ ! -f "$HOME/.zshrc" ]; then
+  echo "[INFO] Copying default .zshrc to $HOME"
+  cp /etc/zshrc "$HOME/.zshrc"
+fi
+
+if [ ! -f "$HOME/.zsh_plugins.txt" ]; then
+  echo "[INFO] Copying default zsh_plugins.txt to $HOME"
+  cp /etc/zsh_plugins.txt "$HOME/.zsh_plugins.txt"
+fi
+
+# Ensure Antidote is installed
+if [ ! -d "$HOME/.antidote" ]; then
+  echo "[INFO] Copying Antidote to $HOME"
+  cp -r /usr/share/antidote "$HOME/.antidote"
+fi
+
+# Load Antidote and plugins
+if [ -f "$HOME/.antidote/antidote.zsh" ]; then
+  source "$HOME/.antidote/antidote.zsh"
+  antidote load "$HOME/.zsh_plugins.txt"
+else
+  echo "[WARN] Antidote not found. Please ensure it is installed."
+fi
+
+# Set terminal color support
+export STARSHIP_CONFIG="$HOME/.config/starship.toml"
+
+# Configure Starship prompt
+if [ ! -f "$HOME/.config/starship.toml"  ]; then
+  mkdir -p "$HOME/.config"
+  cp /etc/xdg/starship/starship.toml "$HOME/.config/starship.toml"
+fi
+
+eval "$(starship init zsh)"
