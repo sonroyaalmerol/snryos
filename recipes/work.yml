@@ -248,16 +248,20 @@ modules:
               realmd \
               oddjob \
               oddjob-mkhomedir \
+              wsdd \
+              thunar \
+              thunar-archive-plugin \
+              ffmpegthumbnailer \
+              tumbler \
+              thunar-volman \
               adcli \
               samba-common \
               samba-common-tools \
               gvfs \
               gvfs-smb \
               cifs-utils \
-              dolphin \
               ffmpeg \
-              ffmpegthumbs \
-              kdegraphics-thumbnailers \
+              wsdd \
               libappimage \
               meld \
               krb5-workstation \
