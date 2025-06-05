@@ -146,6 +146,7 @@ modules:
               sunshine \
               python3-pip \
               libadwaita \
+              gnome-themes-extra \
               duperemove \
               cpulimit \
               sqlite \

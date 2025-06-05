@@ -153,6 +153,7 @@ modules:
               python3-setuptools \
               python3-wheel \
               libadwaita \
+              gnome-themes-extra \
               duperemove \
               cpulimit \
               sqlite \
