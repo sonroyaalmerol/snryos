@@ -1,16 +1,59 @@
 #!/bin/bash
-
 set -euo pipefail   # strict error handling
 IFS=$'\n\t'         # safe IFS
+
+log() { echo "[INFO] $1"; }
+
+CURRENT_UID=$(id -u)
+CURRENT_GID=$(id -g)
+CURRENT_USER=$(id -un)
+CURRENT_GROUP=$(id -gn)
+
+if getent passwd "$CURRENT_USER" > /dev/null; then
+  PASSWD_ENTRY=$(getent passwd "$CURRENT_USER")
+  log "Cleaning /etc/passwd (removing any old $CURRENT_USER / uid $CURRENT_UID)"
+  awk -F: -v u="$CURRENT_USER" -v i="$CURRENT_UID" \
+    '$1!=u && $3!=i { print }' /etc/passwd \
+    | sudo tee /etc/passwd >/dev/null
+  log "Adding updated passwd entry"
+  echo "$PASSWD_ENTRY" | sudo tee -a /etc/passwd >/dev/null
+else
+  echo "[ERROR] getent passwd for $CURRENT_USER failed" >&2
+  exit 1
+fi
+
+if getent group "$CURRENT_GROUP" > /dev/null; then
+  GROUP_ENTRY=$(getent group "$CURRENT_GROUP")
+  log "Cleaning /etc/group (removing any old $CURRENT_GROUP / gid $CURRENT_GID)"
+  awk -F: -v g="$CURRENT_GROUP" -v i="$CURRENT_GID" \
+    '$1!=g && $3!=i { print }' /etc/group \
+    | sudo tee /etc/group >/dev/null
+  log "Adding updated group entry"
+  echo "$GROUP_ENTRY" | sudo tee -a /etc/group >/dev/null
+else
+  echo "[ERROR] getent group for $CURRENT_GROUP failed" >&2
+  exit 1
+fi
+
+log "Cleaning /etc/subuid"
+grep -v "^${CURRENT_USER}:" /etc/subuid \
+  | sudo tee /etc/subuid >/dev/null
+log "Adding subuid mapping"
+echo "${CURRENT_USER}:100000:65536" \
+  | sudo tee -a /etc/subuid >/dev/null
+
+log "Cleaning /etc/subgid"
+grep -v "^${CURRENT_USER}:" /etc/subgid \
+  | sudo tee /etc/subgid >/dev/null
+log "Adding subgid mapping"
+echo "${CURRENT_USER}:100000:65536" \
+  | sudo tee -a /etc/subgid >/dev/null
+
 
 DEV_INSTALL_SCRIPT="$HOME/.dev-install.sh"
 CONTAINER_NAME="dev-snry"
 IMAGE="fedora:latest"
 INIT_MARKER="$HOME/.distrobox_initialized"
-
-log() {
-  echo "[INFO] $1"
-}
 
 # make sure distrobox is installed
 if ! command -v distrobox &> /dev/null; then
@@ -53,7 +96,6 @@ EOT
 
   chmod +x "$DEV_INSTALL_SCRIPT"
 
-  # create the container if it doesn't exist
   if ! distrobox list | grep -q "^$CONTAINER_NAME\$"; then
     log "Creating distrobox '$CONTAINER_NAME' from image $IMAGE"
     distrobox create --name "$CONTAINER_NAME" --image "$IMAGE"
@@ -61,12 +103,10 @@ EOT
     log "Container '$CONTAINER_NAME' already exists"
   fi
 
-  # run the install script inside the container
   log "Running install script inside '$CONTAINER_NAME'"
   distrobox enter --name "$CONTAINER_NAME" -- bash \
     "$DEV_INSTALL_SCRIPT"
 
-  # cleanup
   log "Removing temporary install script"
   rm -f "$DEV_INSTALL_SCRIPT"
 
@@ -76,5 +116,5 @@ EOT
   log "'$CONTAINER_NAME' initialized successfully."
 fi
 
-# finally, drop you into the container shell
+log "Entering distrobox container '$CONTAINER_NAME'"
 distrobox enter --name "$CONTAINER_NAME"
