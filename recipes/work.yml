@@ -239,6 +239,7 @@ modules:
               hyprpolkitagent \
               cliphist \
               xdg-desktop-portal-hyprland \
+              distrobox \
               NetworkManager-tui \
               samba \
               samba-client \
