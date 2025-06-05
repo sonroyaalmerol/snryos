@@ -2,4 +2,4 @@ GTK_THEME=Adwaita:dark
 EDITOR=nvim
 USE_EDITOR=$EDITOR
 VISUAL=$EDITOR
-BROWSER=brave
+BROWSER=zen-browser

@@ -1,120 +1,99 @@
-#!/bin/bash
-set -euo pipefail   # strict error handling
-IFS=$'\n\t'         # safe IFS
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
 
 log() { echo "[INFO] $1"; }
 
-CURRENT_UID=$(id -u)
-CURRENT_GID=$(id -g)
-CURRENT_USER=$(id -un)
-CURRENT_GROUP=$(id -gn)
+#
+# ─── FAKE DOMAIN USER INTO NSS ───────────────────────────────────────────────
+#
+log "Checking sudo credentials…"
+sudo -v
 
-if getent passwd "$CURRENT_USER" > /dev/null; then
-  PASSWD_ENTRY=$(getent passwd "$CURRENT_USER")
-  log "Cleaning /etc/passwd (removing any old $CURRENT_USER / uid $CURRENT_UID)"
-  awk -F: -v u="$CURRENT_USER" -v i="$CURRENT_UID" \
-    '$1!=u && $3!=i { print }' /etc/passwd \
-    | sudo tee /etc/passwd >/dev/null
-  log "Adding updated passwd entry"
-  echo "$PASSWD_ENTRY" | sudo tee -a /etc/passwd >/dev/null
+# Pick up the *real* user if this script is run under sudo
+if [[ -n "${SUDO_UID:-}" ]]; then
+    CURRENT_UID=$SUDO_UID
+    CURRENT_GID=$SUDO_GID
+    CURRENT_USER=$SUDO_USER
+    CURRENT_GROUP=$(getent group "$CURRENT_GID" | cut -d: -f1)
 else
-  echo "[ERROR] getent passwd for $CURRENT_USER failed" >&2
-  exit 1
+    CURRENT_UID=$(id -u)
+    CURRENT_GID=$(id -g)
+    CURRENT_USER=$(id -un)
+    CURRENT_GROUP=$(id -gn)
 fi
 
-if getent group "$CURRENT_GROUP" > /dev/null; then
-  GROUP_ENTRY=$(getent group "$CURRENT_GROUP")
-  log "Cleaning /etc/group (removing any old $CURRENT_GROUP / gid $CURRENT_GID)"
-  awk -F: -v g="$CURRENT_GROUP" -v i="$CURRENT_GID" \
-    '$1!=g && $3!=i { print }' /etc/group \
-    | sudo tee /etc/group >/dev/null
-  log "Adding updated group entry"
-  echo "$GROUP_ENTRY" | sudo tee -a /etc/group >/dev/null
-else
-  echo "[ERROR] getent group for $CURRENT_GROUP failed" >&2
-  exit 1
-fi
+log "Rewriting /etc/passwd for $CURRENT_USER (UID $CURRENT_UID)"
+sudo sed -i \
+    -e "/^${CURRENT_USER}:/d" \
+    -e "/^[^:]*:[^:]*:${CURRENT_UID}:/d" \
+    /etc/passwd
+getent passwd "$CURRENT_USER" | sudo tee -a /etc/passwd >/dev/null
 
-log "Cleaning /etc/subuid"
-grep -v "^${CURRENT_USER}:" /etc/subuid \
-  | sudo tee /etc/subuid >/dev/null
-log "Adding subuid mapping"
-echo "${CURRENT_USER}:100000:65536" \
-  | sudo tee -a /etc/subuid >/dev/null
+log "Rewriting /etc/group for $CURRENT_GROUP (GID $CURRENT_GID)"
+sudo sed -i \
+    -e "/^${CURRENT_GROUP}:/d" \
+    -e "/^[^:]*:[^:]*:${CURRENT_GID}:/d" \
+    /etc/group
+getent group "$CURRENT_GROUP" | sudo tee -a /etc/group >/dev/null
 
-log "Cleaning /etc/subgid"
-grep -v "^${CURRENT_USER}:" /etc/subgid \
-  | sudo tee /etc/subgid >/dev/null
-log "Adding subgid mapping"
-echo "${CURRENT_USER}:100000:65536" \
-  | sudo tee -a /etc/subgid >/dev/null
-
+for F in subuid subgid; do
+    log "Resetting /etc/$F for $CURRENT_USER"
+    sudo sed -i "/^${CURRENT_USER}:/d" /etc/$F
+    echo "${CURRENT_USER}:100000:65536" | sudo tee -a /etc/$F >/dev/null
+done
 
 DEV_INSTALL_SCRIPT="$HOME/.dev-install.sh"
 CONTAINER_NAME="dev-snry"
-IMAGE="fedora:latest"
-INIT_MARKER="$HOME/.distrobox_initialized"
+IMAGE="fedora-toolbox:latest"
+INIT_MARKER="$HOME/.toolbox_initialized"
+GHOSTTY_XTERM="$HOME/.xterm-ghostty.ti"
 
-# make sure distrobox is installed
-if ! command -v distrobox &> /dev/null; then
-  echo "[ERROR] distrobox is not installed. Aborting."
-  exit 1
-fi
-
-# first-time initialization
 if [[ ! -f "$INIT_MARKER" ]]; then
-  log "Container '$CONTAINER_NAME' not initialized. Doing it now…"
+    log "Initializing '$CONTAINER_NAME'…"
+    infocmp xterm-ghostty > "$GHOSTTY_XTERM"
 
-  log "Writing development install script to $DEV_INSTALL_SCRIPT"
-  cat <<'EOT' > "$DEV_INSTALL_SCRIPT"
-#!/bin/bash
+    cat > "$DEV_INSTALL_SCRIPT" <<'EOT'
+#!/usr/bin/env bash
 set -euo pipefail
 
-# enable COPR repos
+sudo tic -x "$HOME/.xterm-ghostty.ti"
+sudo dnf upgrade -y
 sudo dnf copr enable -y atim/starship \
-  || echo "COPR atim/starship already enabled"
+  || echo "already enabled"
 sudo dnf copr enable -y agriffis/neovim-nightly \
-  || echo "COPR agriffis/neovim-nightly already enabled"
-sudo dnf config-manager \
-  --add-repo https://cli.github.com/packages/rpm/gh-cli.repo \
-  || echo "gh-cli already enabled"
-
-# install packages
-sudo dnf install -y \
-  gh \
-  git \
-  zsh \
-  zsh-autosuggestions \
-  zsh-syntax-highlighting \
-  starship \
-  neovim \
-  golang
-
-# install gopls
+  || echo "already enabled"
+sudo dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo \
+  || echo "already enabled"
+sudo dnf install -y gh git zsh zsh-autosuggestions \
+  ncurses-term zsh-syntax-highlighting starship vim neovim golang
 go install golang.org/x/tools/gopls@latest
 EOT
+    # Make the script executable
+    chmod +x "$DEV_INSTALL_SCRIPT"
 
-  chmod +x "$DEV_INSTALL_SCRIPT"
+    # Create a toolbox if it doesn't already exist
+    if ! toolbox list | grep -q "$CONTAINER_NAME"; then
+        log "Creating a new toolbox named '$CONTAINER_NAME'"
+        toolbox create --image "$IMAGE" "$CONTAINER_NAME"
+    else
+        log "Toolbox '$CONTAINER_NAME' already exists"
+    fi
 
-  if ! distrobox list | grep -q "^$CONTAINER_NAME\$"; then
-    log "Creating distrobox '$CONTAINER_NAME' from image $IMAGE"
-    distrobox create --name "$CONTAINER_NAME" --image "$IMAGE"
-  else
-    log "Container '$CONTAINER_NAME' already exists"
-  fi
+    # Run the development installation script inside the toolbox
+    log "Running the development installation script inside the toolbox"
+    toolbox run -c "$CONTAINER_NAME" "$DEV_INSTALL_SCRIPT"
 
-  log "Running install script inside '$CONTAINER_NAME'"
-  distrobox enter --name "$CONTAINER_NAME" -- bash \
-    "$DEV_INSTALL_SCRIPT"
+    # Clean up the temporary script
+    log "Cleaning up the temporary script"
+    rm -f "$DEV_INSTALL_SCRIPT"
+    rm -f "$GHOSTTY_XTERM"
 
-  log "Removing temporary install script"
-  rm -f "$DEV_INSTALL_SCRIPT"
+    # Create the marker file to signify initialization
+    log "Creating the initialization marker file at $INIT_MARKER"
+    touch "$INIT_MARKER"
 
-  log "Marking initialization complete"
-  touch "$INIT_MARKER"
-
-  log "'$CONTAINER_NAME' initialized successfully."
+    log "Toolbox '$CONTAINER_NAME' has been initialized."
 fi
 
-log "Entering distrobox container '$CONTAINER_NAME'"
-distrobox enter --name "$CONTAINER_NAME"
+toolbox enter "$CONTAINER_NAME"

@@ -8,5 +8,6 @@ mkdir -p "$CONFIG_DIR"
 if [ ! -f "$CONFIG_DIR/.initialized" ]; then
   cp -rf /etc/xdg/hypr/hyprland.conf "$CONFIG_DIR/hyprland.conf"
   cp -rf /etc/xdg/hypr/hypridle.conf "$CONFIG_DIR/hypridle.conf"
+  cp -rf /etc/zshrc "$HOME/.zshrc"
   touch "$CONFIG_DIR/.initialized"
 fi
