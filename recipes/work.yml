@@ -223,7 +223,9 @@ modules:
               waydroid \
               cage \
               qt5ct \
+              qt5-qtwayland \
               qt6ct \
+              qt6-qtwayland \
               git \
               wlogout \
               mako \

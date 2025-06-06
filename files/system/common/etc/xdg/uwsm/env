@@ -1,0 +1,10 @@
+export XCURSOR_THEME=Bibata-Modern-Ice
+export XCURSOR_SIZE=24
+
+export GTK_THEME=Catppuccin-dark
+export QT_QPA_PLATFORMTHEME=qt6ct
+
+export EDITOR=nvim
+export USE_EDITOR=$EDITOR
+export VISUAL=$EDITOR
+export BROWSER=zen-browser
