@@ -145,8 +145,19 @@ modules:
               discover-overlay \
               sunshine \
               python3-pip \
+              python3-gobject \
+              python3-i3ipc \
+              python3-build \
+              python3-installer \
+              python3-setuptools \
+              python3-wheel \
               libadwaita \
               gnome-themes-extra \
+              sassc \
+              gnome-tweaks \
+              gtk-murrine-engine \
+              gtk3 \
+              gtk-layer-shell \
               duperemove \
               cpulimit \
               sqlite \
@@ -355,11 +366,16 @@ modules:
       - setup-antidote.sh
       - ensure-executables.sh
       - use-steamos3.sh
+      - install-catppuccin.sh
 
   - type: systemd
     user:
       enabled:
         - nvim-config-setup.service
+        - hypr-config-setup.service
+        - waybar.service
+        - hypridle.service
+        - hyprpaper.service
 
   - type: default-flatpaks
     notify: true # Send notification after install/uninstall is finished (true/false)

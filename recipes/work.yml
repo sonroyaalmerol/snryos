@@ -154,6 +154,11 @@ modules:
               python3-wheel \
               libadwaita \
               gnome-themes-extra \
+              sassc \
+              gnome-tweaks \
+              gtk-murrine-engine \
+              gtk3 \
+              gtk-layer-shell \
               duperemove \
               cpulimit \
               sqlite \
@@ -255,11 +260,9 @@ modules:
               wsdd \
               gnome-keyring \
               seahorse \
-              thunar \
-              thunar-archive-plugin \
+              nautilus \
+              nautilus-extensions \
               ffmpegthumbnailer \
-              tumbler \
-              thunar-volman \
               adcli \
               samba-common \
               samba-common-tools \
@@ -367,6 +370,7 @@ modules:
       - setup-antidote.sh
       - ensure-executables.sh
       - install-nwg-displays.sh
+      - install-catppuccin.sh
 
   - type: systemd
     user:
