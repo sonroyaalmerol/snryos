@@ -152,12 +152,6 @@ modules:
               python3-setuptools \
               python3-wheel \
               libadwaita \
-              gnome-themes-extra \
-              sassc \
-              gnome-tweaks \
-              gtk-murrine-engine \
-              gtk3 \
-              gtk-layer-shell \
               duperemove \
               cpulimit \
               sqlite \
