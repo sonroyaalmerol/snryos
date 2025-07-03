@@ -60,14 +60,17 @@ DEV_INSTALL_SCRIPT="$HOME/.dev-install.sh"
 CONTAINER_NAME="dev-snry"
 IMAGE="fedora-toolbox:latest"
 INIT_MARKER="$HOME/.toolbox_initialized"
+KITTY_XTERM="$HOME/.xterm-kitty.ti"
 
 if [[ ! -f "$INIT_MARKER" ]]; then
   log "Initializing '$CONTAINER_NAME'…"
+  infocmp xterm-kitty > "$KITTY_XTERM"
 
   cat > "$DEV_INSTALL_SCRIPT" <<'EOT'
 #!/usr/bin/env bash
 set -euo pipefail
 
+sudo tic -x "$HOME/.xterm-kitty.ti"
 sudo dnf upgrade -y
 sudo dnf copr enable -y atim/starship \
   || echo "already enabled"
