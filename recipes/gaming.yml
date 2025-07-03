@@ -336,7 +336,7 @@ modules:
       - brave.com
       - zen
     install:
-      - ghostty
+      - kitty
       - starship
       - neovim
       - brave-browser
@@ -346,7 +346,6 @@ modules:
     remove:
       - firefox
       - firefox-langpacks
-      - kitty
 
   - type: fonts
     fonts:

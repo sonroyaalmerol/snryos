@@ -5,95 +5,99 @@ IFS=$'\n\t'
 log() { echo "[INFO] $1"; }
 
 #
-# ─── FAKE DOMAIN USER INTO NSS ───────────────────────────────────────────────
+# ─── SUDO & DETECT REAL USER ─────────────────────────────────────────────────
 #
 log "Checking sudo credentials…"
 sudo -v
 
-# Pick up the *real* user if this script is run under sudo
 if [[ -n "${SUDO_UID:-}" ]]; then
-    CURRENT_UID=$SUDO_UID
-    CURRENT_GID=$SUDO_GID
-    CURRENT_USER=$SUDO_USER
-    CURRENT_GROUP=$(getent group "$CURRENT_GID" | cut -d: -f1)
+  CURRENT_UID=$SUDO_UID
+  CURRENT_GID=$SUDO_GID
+  CURRENT_USER=$SUDO_USER
+  CURRENT_GROUP=$(getent group "$CURRENT_GID" | cut -d: -f1)
 else
-    CURRENT_UID=$(id -u)
-    CURRENT_GID=$(id -g)
-    CURRENT_USER=$(id -un)
-    CURRENT_GROUP=$(id -gn)
+  CURRENT_UID=$(id -u)
+  CURRENT_GID=$(id -g)
+  CURRENT_USER=$(id -un)
+  CURRENT_GROUP=$(id -gn)
 fi
 
-log "Rewriting /etc/passwd for $CURRENT_USER (UID $CURRENT_UID)"
-sudo sed -i \
+#
+# ─── ONLY FAKE‐INTO NSS FOR DOMAIN USERS ───────────────────────────────────────
+#
+# A “local” user will have an entry in /etc/passwd; a domain user
+# typically will *not*.
+if grep -qE "^${CURRENT_USER}:" /etc/passwd; then
+  log "$CURRENT_USER is a local user. Skipping /etc/passwd & /etc/group rewrites."
+else
+  log "Detected domain user: $CURRENT_USER. Faking identity into NSS..."
+
+  log "Rewriting /etc/passwd for $CURRENT_USER (UID $CURRENT_UID)"
+  sudo sed -i \
     -e "/^${CURRENT_USER}:/d" \
     -e "/^[^:]*:[^:]*:${CURRENT_UID}:/d" \
     /etc/passwd
-getent passwd "$CURRENT_USER" | sudo tee -a /etc/passwd >/dev/null
+  getent passwd "$CURRENT_USER" | sudo tee -a /etc/passwd >/dev/null
 
-log "Rewriting /etc/group for $CURRENT_GROUP (GID $CURRENT_GID)"
-sudo sed -i \
+  log "Rewriting /etc/group for $CURRENT_GROUP (GID $CURRENT_GID)"
+  sudo sed -i \
     -e "/^${CURRENT_GROUP}:/d" \
     -e "/^[^:]*:[^:]*:${CURRENT_GID}:/d" \
     /etc/group
-getent group "$CURRENT_GROUP" | sudo tee -a /etc/group >/dev/null
+  getent group "$CURRENT_GROUP" | sudo tee -a /etc/group >/dev/null
 
-for F in subuid subgid; do
+  for F in subuid subgid; do
     log "Resetting /etc/$F for $CURRENT_USER"
     sudo sed -i "/^${CURRENT_USER}:/d" /etc/$F
     echo "${CURRENT_USER}:100000:65536" | sudo tee -a /etc/$F >/dev/null
-done
+  done
+fi
 
+#
+# ─── THE REST OF YOUR TOOLBOX SETUP ──────────────────────────────────────────
+#
 DEV_INSTALL_SCRIPT="$HOME/.dev-install.sh"
 CONTAINER_NAME="dev-snry"
 IMAGE="fedora-toolbox:latest"
 INIT_MARKER="$HOME/.toolbox_initialized"
-GHOSTTY_XTERM="$HOME/.xterm-ghostty.ti"
 
 if [[ ! -f "$INIT_MARKER" ]]; then
-    log "Initializing '$CONTAINER_NAME'…"
-    infocmp xterm-ghostty > "$GHOSTTY_XTERM"
+  log "Initializing '$CONTAINER_NAME'…"
 
-    cat > "$DEV_INSTALL_SCRIPT" <<'EOT'
+  cat > "$DEV_INSTALL_SCRIPT" <<'EOT'
 #!/usr/bin/env bash
 set -euo pipefail
 
-sudo tic -x "$HOME/.xterm-ghostty.ti"
 sudo dnf upgrade -y
 sudo dnf copr enable -y atim/starship \
   || echo "already enabled"
 sudo dnf copr enable -y agriffis/neovim-nightly \
   || echo "already enabled"
-sudo dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo \
+sudo dnf config-manager addrepo \
+  --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo \
   || echo "already enabled"
 sudo dnf install -y gh git zsh zsh-autosuggestions \
-  ncurses-term zsh-syntax-highlighting starship vim neovim golang
+  ncurses-term zsh-syntax-highlighting starship vim \
+  neovim golang
 go install golang.org/x/tools/gopls@latest
 EOT
-    # Make the script executable
-    chmod +x "$DEV_INSTALL_SCRIPT"
 
-    # Create a toolbox if it doesn't already exist
-    if ! toolbox list | grep -q "$CONTAINER_NAME"; then
-        log "Creating a new toolbox named '$CONTAINER_NAME'"
-        toolbox create --image "$IMAGE" "$CONTAINER_NAME"
-    else
-        log "Toolbox '$CONTAINER_NAME' already exists"
-    fi
+  chmod +x "$DEV_INSTALL_SCRIPT"
 
-    # Run the development installation script inside the toolbox
-    log "Running the development installation script inside the toolbox"
-    toolbox run -c "$CONTAINER_NAME" "$DEV_INSTALL_SCRIPT"
+  if ! toolbox list | grep -q "$CONTAINER_NAME"; then
+    log "Creating a new toolbox named '$CONTAINER_NAME'"
+    toolbox create --image "$IMAGE" "$CONTAINER_NAME"
+  else
+    log "Toolbox '$CONTAINER_NAME' already exists"
+  fi
 
-    # Clean up the temporary script
-    log "Cleaning up the temporary script"
-    rm -f "$DEV_INSTALL_SCRIPT"
-    rm -f "$GHOSTTY_XTERM"
+  log "Running the development installation script inside the toolbox"
+  toolbox run -c "$CONTAINER_NAME" "$DEV_INSTALL_SCRIPT"
 
-    # Create the marker file to signify initialization
-    log "Creating the initialization marker file at $INIT_MARKER"
-    touch "$INIT_MARKER"
+  log "Creating the initialization marker file at $INIT_MARKER"
+  touch "$INIT_MARKER"
 
-    log "Toolbox '$CONTAINER_NAME' has been initialized."
+  log "Toolbox '$CONTAINER_NAME' has been initialized."
 fi
 
 toolbox enter "$CONTAINER_NAME"
