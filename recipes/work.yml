@@ -383,11 +383,12 @@ modules:
         - hyprpaper.service
 
   - type: default-flatpaks
-    notify: true # Send notification after install/uninstall is finished (true/false)
-    system:
-      remove:
-        - org.gnome.eog
-    user: {} # Also add Flathub user repo, but no user packages
+    configurations:
+      - notify: true
+        scope: system
+        remove:
+          - org.gnome.eog
+      - scope: user
 
   - type: signing # this sets up the proper policy & signing files for signed images to work fully
 
